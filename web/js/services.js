@@ -221,7 +221,17 @@ export class ExcelScheduleRepository {
                 const crnValue = row[crnIdx];
                 if (!crnValue) continue;
 
-                const crn = crnValue.toString().trim();
+                // Handle numeric CRNs properly (remove decimals, convert from scientific notation)
+                let crn;
+                if (typeof crnValue === 'number') {
+                    // Convert number to integer string (removes .0 and handles scientific notation)
+                    crn = Math.floor(crnValue).toString();
+                } else {
+                    crn = crnValue.toString().trim();
+                }
+
+                // Remove any remaining decimal points and trailing zeros
+                crn = crn.replace(/\.0+$/, '');
                 const courseCode = row[courseIdx] ? row[courseIdx].toString().trim() : '';
                 const courseTitle = row[titleIdx] ? row[titleIdx].toString().trim() : '';
                 const modality = row[modalityIdx] ? row[modalityIdx].toString().trim() : '';
@@ -276,6 +286,11 @@ export class ExcelScheduleRepository {
             }
 
             this.termSchedule = new TermSchedule(offerings);
+
+            // Debug: Log all loaded CRNs
+            console.log(`Loaded ${offerings.length} course offerings with CRNs:`,
+                Array.from(this.termSchedule.crnMap.keys()).sort().join(', '));
+
             return this.termSchedule;
         } catch (error) {
             console.error('Error parsing Excel:', error);

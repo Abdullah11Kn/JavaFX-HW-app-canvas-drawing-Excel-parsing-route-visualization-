@@ -123,8 +123,20 @@ class TermScheduleApp {
             this.visualizeBtn.disabled = true;
             this.visualizeBtn.innerHTML = '<span class="loading"></span> Visualizing...';
 
-            // Parse CRNs
-            const crns = crnText.split(',').map(crn => crn.trim()).filter(crn => crn);
+            // Parse CRNs - normalize them the same way as Excel parsing
+            const crns = crnText.split(',')
+                .map(crn => crn.trim())
+                .map(crn => {
+                    // Handle numeric strings consistently
+                    const num = parseFloat(crn);
+                    if (!isNaN(num)) {
+                        return Math.floor(num).toString();
+                    }
+                    return crn;
+                })
+                .filter(crn => crn);
+
+            console.log('Searching for CRNs:', crns);
 
             if (crns.length === 0) {
                 this.showModal('Error', 'No valid CRNs entered.');
@@ -136,11 +148,14 @@ class TermScheduleApp {
             // Get offerings
             const offerings = this.scheduleService.getOfferingsByCrns(crns);
 
+            console.log(`Found ${offerings.length} offerings for ${crns.length} CRNs`);
+
             // Check for missing CRNs
             const foundCrns = offerings.map(o => o.crn);
             const missingCrns = crns.filter(crn => !foundCrns.includes(crn));
 
             if (missingCrns.length > 0) {
+                console.warn('Missing CRNs:', missingCrns);
                 this.showModal(
                     'Warning',
                     `The following CRNs were not found: ${missingCrns.join(', ')}. Continuing with found courses.`
