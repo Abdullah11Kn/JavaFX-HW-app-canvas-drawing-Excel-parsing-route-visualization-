@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Term Schedule Visualizer - Web Version</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Term Schedule Visualizer</h1>
+            <p class="subtitle">Visualize your course schedule and optimize your campus routes</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Left Panel: Controls -->
+            <div class="control-panel">
+                <div class="section">
+                    <h2>Load Schedule</h2>
+                    <div class="file-upload">
+                        <input type="file" id="excelFile" accept=".xlsx,.xls" />
+                        <label for="excelFile" class="file-label">Choose Excel File</label>
+                        <span id="fileName" class="file-name">No file chosen</span>
+                    </div>
+                    <button id="loadBtn" class="btn btn-primary">Load Excel</button>
+                </div>
+
+                <div class="section">
+                    <h2>Visualization Options</h2>
+                    <div class="form-group">
+                        <label for="crnInput">Enter CRNs (comma-separated):</label>
+                        <input type="text" id="crnInput" placeholder="e.g., 12345, 12346, 12347" />
+                    </div>
+                    <div class="form-group">
+                        <label for="daySelect">Select Day:</label>
+                        <select id="daySelect">
+                            <option value="MONDAY">Monday</option>
+                            <option value="TUESDAY">Tuesday</option>
+                            <option value="WEDNESDAY">Wednesday</option>
+                            <option value="THURSDAY">Thursday</option>
+                            <option value="FRIDAY">Friday</option>
+                            <option value="SATURDAY">Saturday</option>
+                            <option value="SUNDAY">Sunday</option>
+                        </select>
+                    </div>
+                    <button id="visualizeBtn" class="btn btn-success">Visualize Route</button>
+                </div>
+
+                <div class="section">
+                    <h2>Summary</h2>
+                    <div id="summaryArea" class="summary-area">
+                        <p class="info-text">Load an Excel file and visualize a route to see summary information.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Canvas Visualization -->
+            <div class="visualization-panel">
+                <div class="canvas-container">
+                    <canvas id="mapCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for messages -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modalTitle">Message</h3>
+            <p id="modalMessage"></p>
+        </div>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script type="module" src="js/models.js"></script>
+    <script type="module" src="js/services.js"></script>
+    <script type="module" src="js/canvas-renderer.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
